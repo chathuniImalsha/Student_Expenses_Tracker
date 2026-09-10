@@ -1,14 +1,23 @@
 import React from 'react';
 
-const SummaryCard = ({ title, amount, icon, color }) => {
+const SummaryCard = ({ title, amount, icon, color, trend }) => {
   const formatCurrency = (value) => {
     return `Rs. ${value.toLocaleString('en-LK')}`;
   };
 
   return (
     <div className="summary-card">
-      <div className="summary-card-icon" style={{ backgroundColor: color }}>
-        {icon}
+      <div className="summary-card-header">
+        <div className="summary-card-icon" style={{ 
+          background: `linear-gradient(135deg, ${color} 0%, ${color}dd 100%)` 
+        }}>
+          {icon}
+        </div>
+        {trend !== undefined && (
+          <div className={`summary-card-trend ${trend > 0 ? 'positive' : 'negative'}`}>
+            {trend > 0 ? '↑' : '↓'} {Math.abs(trend)}%
+          </div>
+        )}
       </div>
       <div className="summary-card-content">
         <h3 className="summary-card-title">{title}</h3>

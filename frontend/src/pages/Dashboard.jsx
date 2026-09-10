@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import SummaryCard from '../components/SummaryCard';
 import { CategoryChart, MonthlyChart } from '../components/Charts';
-import ExpenseTable from '../components/ExpenseTable';
+import ExpenseCardGrid from '../components/ExpenseCard';
 
 const Dashboard = () => {
   const [summary, setSummary] = useState(null);
@@ -59,13 +59,13 @@ const Dashboard = () => {
           title="Total Spent"
           amount={summary?.totalSpent || 0}
           icon="💰"
-          color="#6366f1"
+          color="#0d9488"
         />
         <SummaryCard
           title="This Month"
           amount={summary?.thisMonth || 0}
           icon="📅"
-          color="#10b981"
+          color="#14b8a6"
         />
         <SummaryCard
           title="Today"
@@ -77,7 +77,7 @@ const Dashboard = () => {
           title="Remaining Budget"
           amount={summary?.remainingBudget || 0}
           icon="💵"
-          color="#ef4444"
+          color="#8b5cf6"
         />
       </div>
 
@@ -104,7 +104,7 @@ const Dashboard = () => {
       <div className="recent-expenses card">
         <h2>Recent Expenses</h2>
         {recentExpenses.length > 0 ? (
-          <ExpenseTable
+          <ExpenseCardGrid
             expenses={recentExpenses}
             onEdit={() => {}}
             onDelete={handleDeleteExpense}

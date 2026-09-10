@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Sidebar = () => {
   const location = useLocation();
+  const { user } = useAuth();
 
   const menuItems = [
     { path: '/dashboard', label: 'Dashboard', icon: '📊' },
@@ -14,6 +16,15 @@ const Sidebar = () => {
 
   return (
     <aside className="sidebar">
+      <div className="sidebar-user-profile">
+        <div className="sidebar-avatar">
+          {user?.name?.charAt(0).toUpperCase() || 'U'}
+        </div>
+        <div className="sidebar-user-info">
+          <h3 className="sidebar-user-name">{user?.name || 'User'}</h3>
+          <p className="sidebar-user-email">{user?.email || 'user@example.com'}</p>
+        </div>
+      </div>
       <nav className="sidebar-nav">
         {menuItems.map((item) => (
           <Link

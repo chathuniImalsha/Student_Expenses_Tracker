@@ -82,4 +82,35 @@ const getMe = async (req, res) => {
   }
 };
 
-module.exports = { register, login, getMe };
+const updateProfile = async (req, res) => {
+  try {
+    const { name, email } = req.body;
+    
+    // Check if email is already taken by another user
+    const existingUser = await User.findOne({ email, _id: { $ne: req.user._id } });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: 'Email already in use' });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { name, email },
+      { new: true, runValidators: true }
+    );
+
+    res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      data: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        createdAt: user.createdAt
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+module.exports = { register, login, getMe, updateProfile };

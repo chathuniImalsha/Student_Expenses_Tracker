@@ -1,7 +1,7 @@
 import React from 'react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#64748b'];
+const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16', '#F97316', '#6B7280'];
 
 const CategoryChart = ({ data }) => {
   const chartData = data.map(item => ({
@@ -33,9 +33,10 @@ const CategoryChart = ({ data }) => {
 };
 
 const MonthlyChart = ({ data }) => {
-  const chartData = data.map(item => ({
+  const chartData = data.map((item, index) => ({
     name: `${item._id.year}-${item._id.month}`,
-    amount: item.total
+    amount: item.total,
+    fill: COLORS[index % COLORS.length]
   }));
 
   return (
@@ -46,7 +47,7 @@ const MonthlyChart = ({ data }) => {
         <YAxis />
         <Tooltip />
         <Legend />
-        <Bar dataKey="amount" fill="#6366f1" />
+        <Bar dataKey="amount" fill="#3B82F6" />
       </BarChart>
     </ResponsiveContainer>
   );

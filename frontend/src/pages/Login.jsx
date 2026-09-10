@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
+import Logo from '../components/Logo';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -34,8 +35,7 @@ const Login = () => {
     <div className="auth-page">
       <div className="auth-container">
         <div className="auth-header">
-          <h1>Spendly</h1>
-          <p className="tagline">Track. Save. Spend Smart.</p>
+          <Logo size={60} showText={true} whiteText={true} />
         </div>
         <form className="auth-form" onSubmit={handleSubmit}>
           <h2>Login</h2>
