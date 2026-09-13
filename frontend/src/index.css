@@ -9,6 +9,12 @@ body {
   background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
   color: var(--text-primary);
   min-height: 100vh;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #f1f5f9;
 }
 
 :root {
@@ -29,6 +35,14 @@ body {
   --card-bg: #ffffff;
   --text-primary: #1e293b;
   --text-secondary: #64748b;
+}
+
+body.dark-mode {
+  --card-bg: #1e293b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --light: #334155;
+  --white: #1e293b;
 }
 
 .container {

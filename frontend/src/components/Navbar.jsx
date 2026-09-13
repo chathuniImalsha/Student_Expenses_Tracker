@@ -23,14 +23,9 @@ const Navbar = () => {
         
         {user && (
           <div className="navbar-right">
-            <div className="navbar-icons">
-              <button className="navbar-icon-btn" title="Notifications">
-                🔔
-              </button>
-              <button className="navbar-icon-btn" title="Settings">
-                ⚙️
-              </button>
-            </div>
+            <Link to="/settings" className="navbar-icon-btn" title="Settings">
+              ⚙️
+            </Link>
             <div className="navbar-profile">
               <div className="navbar-avatar">
                 {user?.name?.charAt(0).toUpperCase() || 'U'}

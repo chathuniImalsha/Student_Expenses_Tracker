@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Login from './pages/Login';
@@ -10,6 +11,7 @@ import Expenses from './pages/Expenses';
 import Budget from './pages/Budget';
 import Reports from './pages/Reports';
 import Savings from './pages/Savings';
+import Settings from './pages/Settings';
 import Profile from './pages/Profile';
 import './App.css';
 
@@ -55,65 +57,74 @@ const Layout = ({ children }) => {
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
-          } />
-          <Route path="/register" element={
-            <PublicRoute>
-              <Register />
-            </PublicRoute>
-          } />
-          <Route path="/dashboard" element={
-            <ProtectedRoute>
-              <Layout>
-                <Dashboard />
-              </Layout>
-            </ProtectedRoute>
-          } />
-          <Route path="/expenses" element={
-            <ProtectedRoute>
-              <Layout>
-                <Expenses />
-              </Layout>
-            </ProtectedRoute>
-          } />
-          <Route path="/budget" element={
-            <ProtectedRoute>
-              <Layout>
-                <Budget />
-              </Layout>
-            </ProtectedRoute>
-          } />
-          <Route path="/savings" element={
-            <ProtectedRoute>
-              <Layout>
-                <Savings />
-              </Layout>
-            </ProtectedRoute>
-          } />
-          <Route path="/reports" element={
-            <ProtectedRoute>
-              <Layout>
-                <Reports />
-              </Layout>
-            </ProtectedRoute>
-          } />
-          <Route path="/profile" element={
-            <ProtectedRoute>
-              <Layout>
-                <Profile />
-              </Layout>
-            </ProtectedRoute>
-          } />
-          <Route path="/" element={<Navigate to="/dashboard" />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            <Route path="/login" element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            } />
+            <Route path="/register" element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>
+            } />
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Dashboard />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/expenses" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Expenses />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/budget" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Budget />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/savings" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Savings />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/settings" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Settings />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/reports" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Reports />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Profile />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/" element={<Navigate to="/dashboard" />} />
+          </Routes>
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
