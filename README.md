@@ -101,25 +101,6 @@ A simple and modern full-stack web application designed to help university stude
 
 ---
 
-## 📸 Screenshots
-
-### Login Page
-![Login](screenshots/login.png)
-
-### Dashboard
-![Dashboard](screenshots/dashboard.png)
-
-### Expenses Page
-![Expenses](screenshots/expenses.png)
-
-### Budget Page
-![Budget](screenshots/budget.png)
-
-### Reports Page
-![Reports](screenshots/reports.png)
-
----
-
 ## 📁 Folder Structure
 
 ```
@@ -314,52 +295,7 @@ http://localhost:5173
 
 ---
 
-## 📡 API Endpoints
 
-### Authentication
-
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| POST | `/api/auth/register` | Register new user | No |
-| POST | `/api/auth/login` | Login user | No |
-| GET | `/api/auth/me` | Get current user | Yes |
-
-### Expenses
-
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| POST | `/api/expenses` | Create expense | Yes |
-| GET | `/api/expenses` | Get all expenses (with filters) | Yes |
-| GET | `/api/expenses/:id` | Get single expense | Yes |
-| PUT | `/api/expenses/:id` | Update expense | Yes |
-| DELETE | `/api/expenses/:id` | Delete expense | Yes |
-
-### Budgets
-
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| POST | `/api/budgets` | Create budget | Yes |
-| GET | `/api/budgets` | Get all budgets | Yes |
-| GET | `/api/budgets/:id` | Get budget with details | Yes |
-| PUT | `/api/budgets/:id` | Update budget | Yes |
-
-### Dashboard
-
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| GET | `/api/dashboard/summary` | Get summary statistics | Yes |
-| GET | `/api/dashboard/category-summary` | Get category spending | Yes |
-| GET | `/api/dashboard/monthly-summary` | Get monthly spending | Yes |
-| GET | `/api/dashboard/recent-expenses` | Get recent expenses | Yes |
-
-### Reports
-
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| GET | `/api/reports/monthly` | Get monthly report | Yes |
-| GET | `/api/reports/export` | Export expenses as CSV | Yes |
-
----
 
 ## 💾 Database Information
 
@@ -413,11 +349,6 @@ http://localhost:5173
 - Bills
 - Other
 
-### Payment Methods
-- Cash
-- Card
-- Bank Transfer
-- Online Payment
 
 ---
 
@@ -462,45 +393,6 @@ Headers:
   Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
----
-
-## 🚀 Future Improvements
-
-- [ ] Add expense categories customization
-- [ ] Implement recurring expenses
-- [ ] Add expense reminders/notifications
-- [ ] Multi-currency support
-- [ ] Data export to PDF
-- [ ] Dark mode theme
-- [ ] Mobile app (React Native)
-- [ ] Expense sharing between users
-- [ ] Advanced analytics and insights
-- [ ] Integration with bank APIs
-- [ ] Receipt scanning/upload
-- [ ] Goal setting and tracking
-- [ ] Expense predictions using ML
-
----
-
-## 📝 License
-
-This project is licensed under the ISC License.
-
----
-
-## 👨‍💻 Author
-
-Created as a university portfolio project demonstrating full-stack development skills with React, Node.js, Express, and MongoDB.
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
----
-
-## 📧 Contact
 
 For questions or feedback, please open an issue on GitHub.
 
