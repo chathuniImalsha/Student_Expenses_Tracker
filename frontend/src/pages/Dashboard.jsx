@@ -110,6 +110,7 @@ const Dashboard = () => {
             expenses={recentExpenses}
             onEdit={() => {}}
             onDelete={handleDeleteExpense}
+            showActions={false}
           />
         ) : (
           <p className="empty-state">No expenses yet</p>

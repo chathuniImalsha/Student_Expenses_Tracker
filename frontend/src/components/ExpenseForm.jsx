@@ -9,6 +9,7 @@ const ExpenseForm = ({ expense, onSubmit, onCancel }) => {
     date: new Date().toISOString().split('T')[0],
     paymentMethod: 'Cash'
   });
+  const [errors, setErrors] = useState({});
 
   const categories = ['Food', 'Transport', 'Education', 'Accommodation', 'Mobile & Internet', 'Shopping', 'Entertainment', 'Health', 'Bills', 'Other'];
   const paymentMethods = ['Cash', 'Card', 'Bank Transfer', 'Online Payment'];
@@ -25,18 +26,45 @@ const ExpenseForm = ({ expense, onSubmit, onCancel }) => {
     }
   }, [expense]);
 
+  const validateAmount = (value) => {
+    if (!value || parseFloat(value) <= 0) {
+      return 'Amount must be greater than 0';
+    }
+    
+    // Check if the value has more than 2 decimal places
+    const decimalPlaces = (value.toString().split('.')[1] || '').length;
+    if (decimalPlaces > 2) {
+      return 'Amount can have maximum 2 decimal places (cents)';
+    }
+    
+    return '';
+  };
+
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
+
+    // Validate amount field
+    if (name === 'amount') {
+      const error = validateAmount(value);
+      setErrors({
+        ...errors,
+        amount: error
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.amount || parseFloat(formData.amount) <= 0) {
-      alert('Amount must be greater than 0');
+    // Validate all fields
+    const amountError = validateAmount(formData.amount);
+    if (amountError) {
+      setErrors({ amount: amountError });
+      alert(amountError);
       return;
     }
 
@@ -65,6 +93,7 @@ const ExpenseForm = ({ expense, onSubmit, onCancel }) => {
           min="0.01"
           required
         />
+        {errors.amount && <div className="error">{errors.amount}</div>}
       </div>
 
       <div className="form-group">

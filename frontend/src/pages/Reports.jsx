@@ -47,7 +47,7 @@ const Reports = () => {
   };
 
   const formatCurrency = (value) => {
-    return `Rs. ${value.toLocaleString('en-LK')}`;
+    return `Rs. ${value.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
   if (loading) {

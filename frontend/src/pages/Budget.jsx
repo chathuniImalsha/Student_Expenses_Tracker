@@ -10,9 +10,24 @@ const Budget = () => {
     year: new Date().getFullYear(),
     amount: ''
   });
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(true);
 
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+  const validateAmount = (value) => {
+    if (!value || parseFloat(value) <= 0) {
+      return 'Amount must be greater than 0';
+    }
+    
+    // Check if the value has more than 2 decimal places
+    const decimalPlaces = (value.toString().split('.')[1] || '').length;
+    if (decimalPlaces > 2) {
+      return 'Amount can have maximum 2 decimal places (cents)';
+    }
+    
+    return '';
+  };
 
   useEffect(() => {
     fetchBudgets();
@@ -42,10 +57,20 @@ const Budget = () => {
 
   const handleCreateBudget = async (e) => {
     e.preventDefault();
+    
+    // Validate amount
+    const amountError = validateAmount(formData.amount);
+    if (amountError) {
+      setErrors({ amount: amountError });
+      alert(amountError);
+      return;
+    }
+    
     try {
       await api.post('/budgets', formData);
       setShowForm(false);
       setFormData({ ...formData, amount: '' });
+      setErrors({});
       fetchBudgets();
     } catch (error) {
       alert(error.response?.data?.message || 'Error creating budget');
@@ -53,8 +78,15 @@ const Budget = () => {
   };
 
   const handleUpdateBudget = async (id, newAmount) => {
+    // Validate amount
+    const amountError = validateAmount(newAmount);
+    if (amountError) {
+      alert(amountError);
+      return;
+    }
+    
     try {
-      await api.put(`/budgets/${id}`, { amount: newAmount });
+      await api.put(`/budgets/${id}`, { amount: parseFloat(newAmount) });
       fetchBudgets();
     } catch (error) {
       alert('Error updating budget');
@@ -121,11 +153,16 @@ const Budget = () => {
                 <input
                   type="number"
                   value={formData.amount}
-                  onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                  onChange={(e) => {
+                    setFormData({ ...formData, amount: e.target.value });
+                    const error = validateAmount(e.target.value);
+                    setErrors({ ...errors, amount: error });
+                  }}
                   min="0.01"
                   step="0.01"
                   required
                 />
+                {errors.amount && <div className="error">{errors.amount}</div>}
               </div>
               <div className="form-actions">
                 <button type="submit" className="btn btn-primary">Save Budget</button>
@@ -144,15 +181,15 @@ const Budget = () => {
           <div className="budget-details">
             <div className="budget-item">
               <span className="budget-label">Monthly Budget</span>
-              <span className="budget-value">Rs. {currentBudget.amount.toLocaleString('en-LK')}</span>
+              <span className="budget-value">Rs. {currentBudget.amount.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
             <div className="budget-item">
               <span className="budget-label">Spent</span>
-              <span className="budget-value">Rs. {currentBudget.spent.toLocaleString('en-LK')}</span>
+              <span className="budget-value">Rs. {currentBudget.spent.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
             <div className="budget-item">
               <span className="budget-label">Remaining</span>
-              <span className="budget-value">Rs. {currentBudget.remaining.toLocaleString('en-LK')}</span>
+              <span className="budget-value">Rs. {currentBudget.remaining.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
             <div className="budget-item">
               <span className="budget-label">Usage</span>
@@ -195,14 +232,14 @@ const Budget = () => {
                 <tr key={budget._id}>
                   <td>{months[budget.month - 1]}</td>
                   <td>{budget.year}</td>
-                  <td>Rs. {budget.amount.toLocaleString('en-LK')}</td>
+                  <td>Rs. {budget.amount.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                   <td>
                     <button
                       className="btn btn-secondary btn-sm"
                       onClick={() => {
                         const newAmount = prompt('Enter new budget amount:', budget.amount);
                         if (newAmount && !isNaN(newAmount)) {
-                          handleUpdateBudget(budget._id, parseFloat(newAmount));
+                          handleUpdateBudget(budget._id, newAmount);
                         }
                       }}
                     >

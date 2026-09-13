@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ExpenseCard = ({ expense, onEdit, onDelete }) => {
+const ExpenseCard = ({ expense, onEdit, onDelete, showActions = true }) => {
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-GB', {
       day: 'numeric',
@@ -10,7 +10,7 @@ const ExpenseCard = ({ expense, onEdit, onDelete }) => {
   };
 
   const formatCurrency = (value) => {
-    return `Rs. ${value.toLocaleString('en-LK')}`;
+    return `Rs. ${value.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
   const getCategoryColor = (category) => {
@@ -58,25 +58,27 @@ const ExpenseCard = ({ expense, onEdit, onDelete }) => {
         </div>
       </div>
       
-      <div className="expense-card-footer">
-        <button
-          onClick={() => onEdit(expense)}
-          className="expense-card-btn expense-card-btn-edit"
-        >
-          Edit
-        </button>
-        <button
-          onClick={() => onDelete(expense._id)}
-          className="expense-card-btn expense-card-btn-delete"
-        >
-          Delete
-        </button>
-      </div>
+      {showActions && (
+        <div className="expense-card-footer">
+          <button
+            onClick={() => onEdit(expense)}
+            className="expense-card-btn expense-card-btn-edit"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => onDelete(expense._id)}
+            className="expense-card-btn expense-card-btn-delete"
+          >
+            Delete
+          </button>
+        </div>
+      )}
     </div>
   );
 };
 
-const ExpenseCardGrid = ({ expenses, onEdit, onDelete }) => {
+const ExpenseCardGrid = ({ expenses, onEdit, onDelete, showActions = true }) => {
   if (expenses.length === 0) {
     return (
       <div className="empty-state">
@@ -93,6 +95,7 @@ const ExpenseCardGrid = ({ expenses, onEdit, onDelete }) => {
           expense={expense}
           onEdit={onEdit}
           onDelete={onDelete}
+          showActions={showActions}
         />
       ))}
     </div>

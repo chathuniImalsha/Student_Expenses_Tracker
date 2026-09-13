@@ -13,10 +13,47 @@ const Savings = () => {
     savedAmount: '',
     description: ''
   });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     fetchSavings();
   }, []);
+
+  const validateAmount = (value, fieldName) => {
+    if (!value || parseFloat(value) < 0) {
+      return `${fieldName} must be greater than or equal to 0`;
+    }
+    
+    // Check if the value has more than 2 decimal places
+    const decimalPlaces = (value.toString().split('.')[1] || '').length;
+    if (decimalPlaces > 2) {
+      return `${fieldName} can have maximum 2 decimal places (cents)`;
+    }
+    
+    return '';
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    // Validate target amount
+    const targetError = validateAmount(formData.targetAmount, 'Target amount');
+    if (targetError) newErrors.targetAmount = targetError;
+    
+    // Validate saved amount
+    const savedError = validateAmount(formData.savedAmount, 'Initial saved amount');
+    if (savedError) newErrors.savedAmount = savedError;
+    
+    // Check if saved amount exceeds target amount
+    if (formData.targetAmount && formData.savedAmount) {
+      if (parseFloat(formData.savedAmount) > parseFloat(formData.targetAmount)) {
+        newErrors.savedAmount = 'Initial saved amount cannot exceed target amount';
+      }
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const fetchSavings = async () => {
     try {
@@ -58,14 +95,30 @@ const Savings = () => {
   };
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
+
+    // Real-time validation for amount fields
+    if (name === 'targetAmount') {
+      const error = validateAmount(value, 'Target amount');
+      setErrors({ ...errors, targetAmount: error });
+    } else if (name === 'savedAmount') {
+      const error = validateAmount(value, 'Initial saved amount');
+      setErrors({ ...errors, savedAmount: error });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate form before submission
+    if (!validateForm()) {
+      return;
+    }
+    
     try {
       if (editingSaving) {
         await api.put(`/savings/${editingSaving._id}`, formData);
@@ -74,6 +127,7 @@ const Savings = () => {
       }
       fetchSavings();
       handleCloseModal();
+      setErrors({});
     } catch (error) {
       alert('Error saving saving goal');
     }
@@ -91,8 +145,15 @@ const Savings = () => {
   };
 
   const handleAddSavings = async (id, amount) => {
+    // Validate amount
+    const amountError = validateAmount(amount, 'Amount to add');
+    if (amountError) {
+      alert(amountError);
+      return;
+    }
+    
     try {
-      await api.post(`/savings/${id}/add`, { amount });
+      await api.post(`/savings/${id}/add`, { amount: parseFloat(amount) });
       fetchSavings();
     } catch (error) {
       alert('Error adding savings');
@@ -113,7 +174,7 @@ const Savings = () => {
   };
 
   const formatCurrency = (value) => {
-    return `Rs. ${value.toLocaleString('en-LK')}`;
+    return `Rs. ${value.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
   if (loading) {
@@ -223,18 +284,21 @@ const Savings = () => {
                   type="number"
                   placeholder="Add amount"
                   className="quick-add-input"
+                  step="0.01"
+                  min="0.01"
+                  id={`quick-add-${saving._id}`}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && e.target.value) {
-                      handleAddSavings(saving._id, parseFloat(e.target.value));
+                      handleAddSavings(saving._id, e.target.value);
                       e.target.value = '';
                     }
                   }}
                 />
                 <button
                   onClick={() => {
-                    const input = document.querySelector('.quick-add-input');
+                    const input = document.getElementById(`quick-add-${saving._id}`);
                     if (input && input.value) {
-                      handleAddSavings(saving._id, parseFloat(input.value));
+                      handleAddSavings(saving._id, input.value);
                       input.value = '';
                     }
                   }}
@@ -250,75 +314,110 @@ const Savings = () => {
 
       {showModal && (
         <div className="modal-overlay" onClick={handleCloseModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2>{editingSaving ? 'Edit Saving Goal' : 'Create Saving Goal'}</h2>
+          <div className="modal-content savings-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>{editingSaving ? 'Edit Saving Goal' : 'Create Saving Goal'}</h2>
+              <button className="modal-close-btn" onClick={handleCloseModal}>×</button>
+            </div>
             <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Month</label>
-                <select
-                  name="month"
-                  value={formData.month}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="January">January</option>
-                  <option value="February">February</option>
-                  <option value="March">March</option>
-                  <option value="April">April</option>
-                  <option value="May">May</option>
-                  <option value="June">June</option>
-                  <option value="July">July</option>
-                  <option value="August">August</option>
-                  <option value="September">September</option>
-                  <option value="October">October</option>
-                  <option value="November">November</option>
-                  <option value="December">December</option>
-                </select>
+              <div className="savings-form-grid">
+                <div className="form-group label-with-icon">
+                  <label htmlFor="month">
+                    <span className="label-icon">📅</span>
+                    Month
+                  </label>
+                  <select
+                    id="month"
+                    name="month"
+                    value={formData.month}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Select Month</option>
+                    <option value="January">January</option>
+                    <option value="February">February</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                  </select>
+                </div>
+
+                <div className="form-group label-with-icon">
+                  <label htmlFor="year">
+                    <span className="label-icon">📆</span>
+                    Year
+                  </label>
+                  <input
+                    id="year"
+                    type="number"
+                    name="year"
+                    value={formData.year}
+                    onChange={handleChange}
+                    required
+                    min="2020"
+                    max="2030"
+                    placeholder="2024"
+                  />
+                </div>
               </div>
 
-              <div className="form-group">
-                <label>Year</label>
+              <div className="form-group label-with-icon">
+                <label htmlFor="targetAmount">
+                  <span className="label-icon">🎯</span>
+                  Target Amount (Rs.)
+                </label>
                 <input
-                  type="number"
-                  name="year"
-                  value={formData.year}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Target Amount</label>
-                <input
+                  id="targetAmount"
                   type="number"
                   name="targetAmount"
                   value={formData.targetAmount}
                   onChange={handleChange}
                   required
-                  min="0"
+                  min="0.01"
                   step="0.01"
+                  placeholder="Enter your savings target"
                 />
+                {errors.targetAmount && <div className="error">{errors.targetAmount}</div>}
               </div>
 
-              <div className="form-group">
-                <label>Initial Saved Amount</label>
+              <div className="form-group label-with-icon">
+                <label htmlFor="savedAmount">
+                  <span className="label-icon">💰</span>
+                  Initial Saved Amount (Rs.)
+                </label>
                 <input
+                  id="savedAmount"
                   type="number"
                   name="savedAmount"
                   value={formData.savedAmount}
                   onChange={handleChange}
                   min="0"
                   step="0.01"
+                  placeholder="Enter initial amount saved (optional)"
                 />
+                {errors.savedAmount && <div className="error">{errors.savedAmount}</div>}
+                <small className="form-hint">Leave empty if starting from zero</small>
               </div>
 
-              <div className="form-group">
-                <label>Description (Optional)</label>
+              <div className="form-group label-with-icon">
+                <label htmlFor="description">
+                  <span className="label-icon">📝</span>
+                  Description (Optional)
+                </label>
                 <textarea
+                  id="description"
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
                   rows="3"
+                  placeholder="Add a description for your savings goal..."
                 />
               </div>
 
@@ -327,7 +426,7 @@ const Savings = () => {
                   Cancel
                 </button>
                 <button type="submit" className="btn btn-primary">
-                  {editingSaving ? 'Update' : 'Create'}
+                  {editingSaving ? '💾 Update Goal' : '🚀 Create Goal'}
                 </button>
               </div>
             </form>

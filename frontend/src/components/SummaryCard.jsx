@@ -2,7 +2,7 @@ import React from 'react';
 
 const SummaryCard = ({ title, amount, icon, color }) => {
   const formatCurrency = (value) => {
-    return `Rs. ${value.toLocaleString('en-LK')}`;
+    return `Rs. ${value.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
   return (
