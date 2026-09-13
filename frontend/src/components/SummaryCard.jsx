@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SummaryCard = ({ title, amount, icon, color, trend }) => {
+const SummaryCard = ({ title, amount, icon, color }) => {
   const formatCurrency = (value) => {
     return `Rs. ${value.toLocaleString('en-LK')}`;
   };
@@ -13,11 +13,6 @@ const SummaryCard = ({ title, amount, icon, color, trend }) => {
         }}>
           {icon}
         </div>
-        {trend !== undefined && (
-          <div className={`summary-card-trend ${trend > 0 ? 'positive' : 'negative'}`}>
-            {trend > 0 ? '↑' : '↓'} {Math.abs(trend)}%
-          </div>
-        )}
       </div>
       <div className="summary-card-content">
         <h3 className="summary-card-title">{title}</h3>

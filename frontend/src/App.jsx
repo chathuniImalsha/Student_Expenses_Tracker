@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import Expenses from './pages/Expenses';
 import Budget from './pages/Budget';
 import Reports from './pages/Reports';
+import Savings from './pages/Savings';
 import Profile from './pages/Profile';
 import './App.css';
 
@@ -85,6 +86,13 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <Budget />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/savings" element={
+            <ProtectedRoute>
+              <Layout>
+                <Savings />
               </Layout>
             </ProtectedRoute>
           } />

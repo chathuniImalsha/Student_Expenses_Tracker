@@ -68,17 +68,19 @@ const Dashboard = () => {
           color="#14b8a6"
         />
         <SummaryCard
-          title="Today"
-          amount={summary?.today || 0}
-          icon="📆"
-          color="#f59e0b"
-        />
-        <SummaryCard
           title="Remaining Budget"
           amount={summary?.remainingBudget || 0}
           icon="💵"
           color="#8b5cf6"
         />
+        {summary?.currentMonthSaving && (
+          <SummaryCard
+            title="Monthly Savings"
+            amount={summary.currentMonthSaving.savedAmount || 0}
+            icon="💎"
+            color="#ec4899"
+          />
+        )}
       </div>
 
       <div className="dashboard-charts">

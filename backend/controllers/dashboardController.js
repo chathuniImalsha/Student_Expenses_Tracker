@@ -1,5 +1,6 @@
 const Expense = require('../models/Expense');
 const Budget = require('../models/Budget');
+const Saving = require('../models/Saving');
 
 const getSummary = async (req, res) => {
   try {
@@ -61,13 +62,20 @@ const getSummary = async (req, res) => {
       remainingBudget = currentBudget.amount - spent;
     }
 
+    const currentMonthSaving = await Saving.findOne({
+      userId: req.user._id,
+      month: now.toLocaleString('en-US', { month: 'long' }),
+      year: currentYear
+    });
+
     res.json({
       success: true,
       data: {
         totalSpent: totalSpent.length > 0 ? totalSpent[0].total : 0,
         thisMonth: thisMonthSpent.length > 0 ? thisMonthSpent[0].total : 0,
         today: todaySpent.length > 0 ? todaySpent[0].total : 0,
-        remainingBudget
+        remainingBudget,
+        currentMonthSaving: currentMonthSaving || null
       }
     });
   } catch (error) {
